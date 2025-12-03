@@ -6,6 +6,9 @@
 
 set -e  # 遇到错误立即退出
 
+# 获取脚本所在目录（绝对路径）
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
 # 颜色输出
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -168,14 +171,13 @@ configure_chrony() {
 setup_scripts() {
     log_step "设置脚本权限..."
 
-    local script_dir="/root/test"
-
     # 设置执行权限
-    chmod +x "$script_dir/monitor.sh"
-    chmod +x "$script_dir/sync_time.sh"
-    chmod +x "$script_dir/check_network.sh"
+    chmod +x "$SCRIPT_DIR/monitor.sh"
+    chmod +x "$SCRIPT_DIR/sync_time.sh"
+    chmod +x "$SCRIPT_DIR/check_network.sh"
 
     log_info "✓ 脚本权限设置完成"
+    log_info "  脚本目录: $SCRIPT_DIR"
     echo ""
 }
 
@@ -209,15 +211,15 @@ configure_crontab() {
     local current_crontab=$(crontab -l 2>/dev/null || true)
 
     # 定义新的定时任务
-    local new_cron_monitor="0 */2 * * * /root/test/monitor.sh"
+    local new_cron_monitor="0 */2 * * * $SCRIPT_DIR/monitor.sh"
 
     # 检查是否已存在监控任务
-    if echo "$current_crontab" | grep -q "/root/test/monitor.sh"; then
+    if echo "$current_crontab" | grep -q "monitor.sh"; then
         log_warn "监控任务已存在，跳过添加"
     else
         log_info "添加监控定时任务（每2小时执行）..."
         (crontab -l 2>/dev/null || true; echo "$new_cron_monitor") | crontab -
-        log_info "✓ 定时任务已添加"
+        log_info "✓ 定时任务已添加: $new_cron_monitor"
     fi
 
     echo ""
@@ -254,7 +256,8 @@ show_completion() {
     echo "=================================================="
     echo ""
     echo "📋 配置信息："
-    echo "   监控脚本: /root/test/monitor.sh"
+    echo "   安装目录: $SCRIPT_DIR"
+    echo "   监控脚本: $SCRIPT_DIR/monitor.sh"
     echo "   执行频率: 每2小时一次"
     echo "   日志目录: /var/log/monitor/"
     echo ""
@@ -262,7 +265,7 @@ show_completion() {
     echo "   查看定时任务: crontab -l"
     echo "   编辑定时任务: crontab -e"
     echo "   查看日志: tail -f /var/log/monitor/monitor.log"
-    echo "   手动执行: /root/test/monitor.sh"
+    echo "   手动执行: $SCRIPT_DIR/monitor.sh"
     echo ""
     echo "📊 监控任务："
     echo "   ✓ 时间同步（阿里云）"
@@ -280,7 +283,7 @@ show_completion() {
     echo "💡 提示："
     echo "   - 监控任务将在每天的 0:00, 2:00, 4:00, ... 22:00 执行"
     echo "   - 首次执行可能需要等待到下个整点"
-    echo "   - 可以手动执行测试: /root/test/monitor.sh"
+    echo "   - 可以手动执行测试: $SCRIPT_DIR/monitor.sh"
     echo ""
     echo "=================================================="
 }
