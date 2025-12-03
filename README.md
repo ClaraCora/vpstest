@@ -56,6 +56,15 @@ VPS 自动化监控工具是一个专为 Linux 服务器设计的轻量级监控
 
 ### 一键安装
 
+**复制下面一条命令即可完成安装：**
+
+```bash
+git clone https://github.com/ClaraCora/vpstest.git && cd vpstest && chmod +x auto_install.sh && ./auto_install.sh
+```
+
+<details>
+<summary>或者分步安装（点击展开）</summary>
+
 ```bash
 # 1. 下载项目
 git clone https://github.com/ClaraCora/vpstest.git
@@ -65,6 +74,7 @@ cd vpstest
 chmod +x auto_install.sh
 ./auto_install.sh
 ```
+</details>
 
 安装脚本会自动完成：
 - ✅ 检测操作系统和包管理器
