@@ -1,0 +1,33 @@
+# 日志文件
+*.log
+logs/
+/var/log/
+
+# 临时文件
+*.tmp
+*.swp
+*.swo
+*~
+.DS_Store
+
+# 备份文件
+*.bak
+*.backup
+crontab_backup_*.txt
+
+# 编辑器文件
+.vscode/
+.idea/
+*.sublime-*
+
+# 系统文件
+Thumbs.db
+.directory
+
+# 环境配置
+.env
+.env.local
+
+# 测试文件
+test_*.sh
+debug_*.sh
